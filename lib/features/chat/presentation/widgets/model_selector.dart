@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:briluxforge/core/theme/app_colors.dart';
+import 'package:briluxforge/core/theme/app_tokens.dart';
 import 'package:briluxforge/features/api_keys/data/models/api_key_model.dart';
 import 'package:briluxforge/features/api_keys/providers/api_key_provider.dart';
 import 'package:briluxforge/features/delegation/data/models/delegation_result.dart';
@@ -36,7 +37,7 @@ class ModelSelectorPopup extends ConsumerWidget {
         constraints: const BoxConstraints(maxHeight: 380),
         decoration: BoxDecoration(
           color: AppColors.surfaceElevatedDark,
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: AppRadii.borderMd,
           border: Border.all(color: AppColors.borderDark),
           boxShadow: [
             BoxShadow(

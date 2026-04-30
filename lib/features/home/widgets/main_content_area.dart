@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:briluxforge/core/theme/app_colors.dart';
+import 'package:briluxforge/core/theme/app_tokens.dart';
 import 'package:briluxforge/features/chat/presentation/chat_screen.dart';
 import 'package:briluxforge/features/chat/providers/active_conversation_provider.dart';
 import 'package:briluxforge/features/chat/providers/chat_provider.dart';
@@ -127,7 +128,7 @@ class _NewChatIconButton extends StatelessWidget {
       message: 'New Chat  Ctrl+N',
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: AppRadii.borderSm,
         child: const Padding(
           padding: EdgeInsets.all(6),
           child: Icon(
@@ -159,7 +160,7 @@ class _EmptyState extends StatelessWidget {
             height: 56,
             decoration: BoxDecoration(
               color: AppColors.primary.withValues(alpha: 0.12),
-              borderRadius: BorderRadius.circular(16),
+              borderRadius: AppRadii.borderLg,
             ),
             child: const Icon(
               Icons.bolt,
@@ -235,13 +236,13 @@ class _SuggestionChip extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: onTap,
-      borderRadius: BorderRadius.circular(10),
+      borderRadius: AppRadii.borderMd,
       child: Container(
         padding:
             const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
         decoration: BoxDecoration(
           color: AppColors.surfaceElevatedDark,
-          borderRadius: BorderRadius.circular(10),
+          borderRadius: AppRadii.borderMd,
           border: Border.all(color: AppColors.borderDark),
         ),
         child: Row(

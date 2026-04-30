@@ -8,6 +8,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 import 'package:briluxforge/core/constants/app_constants.dart';
 import 'package:briluxforge/core/theme/app_colors.dart';
+import 'package:briluxforge/core/theme/app_tokens.dart';
 import 'package:briluxforge/features/chat/data/models/message_model.dart';
 
 class MessageBubble extends StatelessWidget {
@@ -377,7 +378,7 @@ class _CodeBlockState extends State<_CodeBlock> {
       margin: const EdgeInsets.symmetric(vertical: 10),
       decoration: BoxDecoration(
         color: AppColors.codeBlockBackgroundDark,
-        borderRadius: BorderRadius.circular(10),
+        borderRadius: AppRadii.borderMd,
         border: Border.all(color: AppColors.borderDark),
       ),
       child: Column(
@@ -527,32 +528,32 @@ class _CodeBlockState extends State<_CodeBlock> {
     }).toList();
   }
 
-  // VS Code dark+ inspired syntax colors
+  // VS Code Dark+ inspired syntax colours — tokens live in AppColors.syntax*.
   TextStyle? _styleForClass(String cls) => switch (cls) {
         'keyword' || 'selector-tag' =>
-          const TextStyle(color: Color(0xFF569CD6)),
+          const TextStyle(color: AppColors.syntaxKeyword),
         'string' ||
         'regexp' ||
         'addition' =>
-          const TextStyle(color: Color(0xFFCE9178)),
+          const TextStyle(color: AppColors.syntaxString),
         'comment' || 'quote' =>
-          const TextStyle(color: Color(0xFF6A9955)),
+          const TextStyle(color: AppColors.syntaxComment),
         'number' || 'literal' =>
-          const TextStyle(color: Color(0xFFB5CEA8)),
+          const TextStyle(color: AppColors.syntaxNumber),
         'function' || 'title' =>
-          const TextStyle(color: Color(0xFFDCDCAA)),
+          const TextStyle(color: AppColors.syntaxFunction),
         'class' ||
         'built_in' ||
         'type' =>
-          const TextStyle(color: Color(0xFF4EC9B0)),
-        'tag' => const TextStyle(color: Color(0xFF808080)),
+          const TextStyle(color: AppColors.syntaxClass),
+        'tag' => const TextStyle(color: AppColors.syntaxTag),
         'attr' || 'variable' =>
-          const TextStyle(color: Color(0xFF9CDCFE)),
-        'symbol' => const TextStyle(color: Color(0xFF56B6C2)),
-        'params' => const TextStyle(color: Color(0xFFDCDCAA)),
-        'doctag' => const TextStyle(color: Color(0xFF608B4E)),
+          const TextStyle(color: AppColors.syntaxVariable),
+        'symbol' => const TextStyle(color: AppColors.syntaxSymbol),
+        'params' => const TextStyle(color: AppColors.syntaxFunction),
+        'doctag' => const TextStyle(color: AppColors.syntaxDocTag),
         'meta' || 'meta-keyword' =>
-          const TextStyle(color: Color(0xFF9B9B9B)),
+          const TextStyle(color: AppColors.syntaxMeta),
         _ => null,
       };
 }

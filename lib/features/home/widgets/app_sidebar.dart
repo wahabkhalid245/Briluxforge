@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:briluxforge/core/constants/app_constants.dart';
 import 'package:briluxforge/core/routing/app_router.dart';
 import 'package:briluxforge/core/theme/app_colors.dart';
+import 'package:briluxforge/core/theme/app_tokens.dart';
 import 'package:briluxforge/features/auth/providers/auth_provider.dart';
 import 'package:briluxforge/features/chat/data/models/conversation_model.dart';
 import 'package:briluxforge/features/chat/data/models/conversation_search_result.dart';
@@ -133,7 +134,7 @@ class _SidebarHeader extends StatelessWidget {
             height: 28,
             decoration: BoxDecoration(
               color: AppColors.primary,
-              borderRadius: BorderRadius.circular(8),
+              borderRadius: AppRadii.borderSm,
             ),
             child: const Icon(Icons.bolt, color: Colors.white, size: 16),
           ),
@@ -238,15 +239,15 @@ class _SearchField extends StatelessWidget {
           ),
           isDense: true,
           border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(8),
+            borderRadius: AppRadii.borderSm,
             borderSide: const BorderSide(color: AppColors.borderDark),
           ),
           enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(8),
+            borderRadius: AppRadii.borderSm,
             borderSide: const BorderSide(color: AppColors.borderDark),
           ),
           focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(8),
+            borderRadius: AppRadii.borderSm,
             borderSide: BorderSide(
               color: AppColors.primary.withValues(alpha: 0.5),
             ),
@@ -386,7 +387,7 @@ class _SearchResultTile extends ConsumerWidget {
         onTap: () => ref
             .read(chatNotifierProvider.notifier)
             .selectConversation(result.conversation.id),
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: AppRadii.borderSm,
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
           child: Column(
@@ -566,14 +567,14 @@ class _ConversationTile extends ConsumerWidget {
         onTap: () => ref
             .read(chatNotifierProvider.notifier)
             .selectConversation(conversation.id),
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: AppRadii.borderSm,
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 150),
           decoration: BoxDecoration(
             color: isActive
                 ? AppColors.primary.withValues(alpha: 0.12)
                 : Colors.transparent,
-            borderRadius: BorderRadius.circular(8),
+            borderRadius: AppRadii.borderSm,
           ),
           padding:
               const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
@@ -617,7 +618,7 @@ class _DeleteButton extends ConsumerWidget {
         onTap: () => ref
             .read(chatNotifierProvider.notifier)
             .deleteConversation(conversationId),
-        borderRadius: BorderRadius.circular(4),
+        borderRadius: AppRadii.borderXs,
         child: const Padding(
           padding: EdgeInsets.all(3),
           child: Icon(
@@ -693,7 +694,7 @@ class _SidebarFooter extends ConsumerWidget {
                 offset: const Offset(0, -8),
                 color: AppColors.surfaceElevatedDark,
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: AppRadii.borderMd,
                   side: const BorderSide(color: AppColors.borderDark),
                 ),
                 itemBuilder: (_) => [
@@ -766,7 +767,7 @@ class _SidebarFooter extends ConsumerWidget {
                   height: 28,
                   decoration: BoxDecoration(
                     color: AppColors.primary.withValues(alpha: 0.2),
-                    borderRadius: BorderRadius.circular(50),
+                    shape: BoxShape.circle, // profile avatar — fully-rounded exempt
                   ),
                   child: const Icon(
                     Icons.person_outline,
@@ -800,7 +801,7 @@ class _FooterIconButton extends StatelessWidget {
       message: tooltip,
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: AppRadii.borderSm,
         child: Padding(
           padding: const EdgeInsets.all(6),
           child: Icon(icon, size: 18, color: AppColors.textSecondaryDark),

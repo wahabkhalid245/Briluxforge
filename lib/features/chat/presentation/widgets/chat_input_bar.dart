@@ -5,6 +5,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:briluxforge/core/routing/app_router.dart';
 import 'package:briluxforge/core/theme/app_colors.dart';
+import 'package:briluxforge/core/theme/app_tokens.dart';
+import 'package:briluxforge/core/widgets/app_toggle.dart';
 import 'package:briluxforge/features/chat/presentation/widgets/delegation_badge.dart';
 import 'package:briluxforge/features/chat/presentation/widgets/model_selector.dart';
 import 'package:briluxforge/features/chat/providers/chat_provider.dart';
@@ -197,21 +199,21 @@ class _InputField extends StatelessWidget {
             vertical: 14,
           ),
           border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(14),
+            borderRadius: AppRadii.borderMd,
             borderSide: const BorderSide(color: AppColors.borderDark),
           ),
           enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(14),
+            borderRadius: AppRadii.borderMd,
             borderSide: const BorderSide(color: AppColors.borderDark),
           ),
           focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(14),
+            borderRadius: AppRadii.borderMd,
             borderSide: BorderSide(
               color: AppColors.primary.withValues(alpha: 0.6),
             ),
           ),
           disabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(14),
+            borderRadius: AppRadii.borderMd,
             borderSide: const BorderSide(color: AppColors.borderDark),
           ),
         ),
@@ -242,7 +244,7 @@ class _SkillsIndicator extends StatelessWidget {
       message: hasActive ? 'Tap to manage active skills' : 'Tap to add skills',
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: AppRadii.borderSm,
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 200),
           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
@@ -250,7 +252,7 @@ class _SkillsIndicator extends StatelessWidget {
             color: hasActive
                 ? AppColors.primary.withValues(alpha: 0.1)
                 : Colors.transparent,
-            borderRadius: BorderRadius.circular(8),
+            borderRadius: AppRadii.borderSm,
             border: Border.all(
               color: hasActive
                   ? AppColors.primary.withValues(alpha: 0.3)
@@ -309,7 +311,7 @@ class _SkillsQuickPanel extends ConsumerWidget {
             margin: const EdgeInsets.only(bottom: 16),
             decoration: BoxDecoration(
               color: AppColors.borderDark,
-              borderRadius: BorderRadius.circular(2),
+              borderRadius: AppRadii.borderXs,
             ),
           ),
           Padding(
@@ -413,7 +415,7 @@ class _QuickToggleRow extends ConsumerWidget {
               color: skill.isEnabled
                   ? AppColors.primary.withValues(alpha: 0.12)
                   : AppColors.surfaceElevatedDark,
-              borderRadius: BorderRadius.circular(8),
+              borderRadius: AppRadii.borderSm,
             ),
             child: Icon(
               Icons.psychology_outlined,
@@ -450,13 +452,11 @@ class _QuickToggleRow extends ConsumerWidget {
               ],
             ),
           ),
-          Switch(
+          AppToggle(
             value: skill.isEnabled,
             onChanged: (enabled) => ref
                 .read(skillsNotifierProvider.notifier)
                 .toggle(skill.id, enabled: enabled),
-            activeThumbColor: AppColors.primary,
-            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
           ),
         ],
       ),
@@ -482,13 +482,13 @@ class _SendButton extends StatelessWidget {
           color: canSend
               ? AppColors.primary
               : AppColors.primary.withValues(alpha: 0.25),
-          borderRadius: BorderRadius.circular(10),
+          borderRadius: AppRadii.borderMd,
         ),
         child: Material(
           color: Colors.transparent,
           child: InkWell(
             onTap: canSend ? onSend : null,
-            borderRadius: BorderRadius.circular(10),
+            borderRadius: AppRadii.borderMd,
             child: Padding(
               padding: const EdgeInsets.all(10),
               child: Icon(

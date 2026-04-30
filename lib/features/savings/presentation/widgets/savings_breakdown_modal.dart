@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:briluxforge/core/theme/app_colors.dart';
+import 'package:briluxforge/core/theme/app_tokens.dart';
 import 'package:briluxforge/features/savings/data/models/savings_model.dart';
 
 void showSavingsBreakdownModal(
@@ -26,7 +27,7 @@ class _SavingsBreakdownDialog extends StatelessWidget {
 
     return Dialog(
       backgroundColor: AppColors.surfaceDark,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      shape: RoundedRectangleBorder(borderRadius: AppRadii.borderLg),
       child: ConstrainedBox(
         constraints: const BoxConstraints(maxWidth: 560, maxHeight: 680),
         child: Padding(
@@ -117,7 +118,7 @@ class _SummaryRow extends StatelessWidget {
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: AppColors.savingsGreen.withValues(alpha: 0.08),
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: AppRadii.borderMd,
         border: Border.all(
           color: AppColors.savingsGreen.withValues(alpha: 0.25),
         ),
@@ -357,7 +358,7 @@ class _MathExplanation extends StatelessWidget {
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         color: AppColors.surfaceElevatedDark,
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: AppRadii.borderSm,
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,

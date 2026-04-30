@@ -1,6 +1,7 @@
 // lib/features/auth/presentation/widgets/auth_form.dart
 import 'package:flutter/material.dart';
 import 'package:briluxforge/core/theme/app_colors.dart';
+import 'package:briluxforge/core/theme/app_tokens.dart';
 
 class BriluxTextField extends StatelessWidget {
   const BriluxTextField({
@@ -145,7 +146,7 @@ class AuthErrorCard extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
       decoration: BoxDecoration(
         color: AppColors.error.withValues(alpha: 0.1),
-        borderRadius: BorderRadius.circular(10),
+        borderRadius: AppRadii.borderMd,
         border: Border.all(color: AppColors.error.withValues(alpha: 0.4)),
       ),
       child: Row(
@@ -179,7 +180,7 @@ class AuthSuccessCard extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
       decoration: BoxDecoration(
         color: AppColors.success.withValues(alpha: 0.1),
-        borderRadius: BorderRadius.circular(10),
+        borderRadius: AppRadii.borderMd,
         border: Border.all(color: AppColors.success.withValues(alpha: 0.4)),
       ),
       child: Row(

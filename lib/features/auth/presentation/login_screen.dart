@@ -2,8 +2,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:briluxforge/core/constants/app_constants.dart';
+import 'package:briluxforge/core/errors/app_exception.dart';
 import 'package:briluxforge/core/routing/app_router.dart';
 import 'package:briluxforge/core/theme/app_colors.dart';
+import 'package:briluxforge/core/theme/app_tokens.dart';
 import 'package:briluxforge/core/utils/logger.dart';
 import 'package:briluxforge/features/auth/presentation/widgets/auth_form.dart';
 import 'package:briluxforge/features/auth/providers/auth_provider.dart';
@@ -47,7 +49,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       AppLogger.e('LoginScreen', 'Login failed', e);
       if (mounted) {
         setState(() {
-          _error = e.toString().replaceFirst('Exception: ', '');
+          _error = e is AppException ? e.message : 'Sign-in failed. Please check your credentials and try again.';
           _loading = false;
         });
       }
@@ -75,7 +77,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     } catch (e) {
       if (mounted) {
         setState(() {
-          _error = e.toString().replaceFirst('Exception: ', '');
+          _error = e is AppException ? e.message : 'Password reset failed. Please try again.';
           _loading = false;
         });
       }
@@ -134,7 +136,7 @@ class _BrandPanel extends StatelessWidget {
             height: 64,
             decoration: BoxDecoration(
               color: AppColors.primary,
-              borderRadius: BorderRadius.circular(18),
+              borderRadius: AppRadii.borderLg,
               boxShadow: [
                 BoxShadow(
                   color: AppColors.primary.withValues(alpha: 0.35),
@@ -189,7 +191,7 @@ class _FeaturePill extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       decoration: BoxDecoration(
         color: AppColors.surfaceElevatedDark,
-        borderRadius: BorderRadius.circular(50),
+        borderRadius: AppRadii.borderLg,
         border: Border.all(color: AppColors.borderDark),
       ),
       child: Row(

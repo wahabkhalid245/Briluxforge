@@ -8,6 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:briluxforge/core/theme/app_colors.dart';
 import 'package:briluxforge/core/theme/app_spacing.dart';
+import 'package:briluxforge/core/theme/app_tokens.dart';
 import 'package:briluxforge/features/updater/data/models/update_state.dart';
 import 'package:briluxforge/features/updater/presentation/update_modal.dart';
 import 'package:briluxforge/features/updater/presentation/widgets/update_status_dot.dart';
@@ -81,7 +82,7 @@ class _BannerContent extends ConsumerWidget {
           onTap: isReady
               ? () => showUpdateModal(context, state as UpdateReady)
               : null,
-          borderRadius: BorderRadius.circular(AppSpacing.sm),
+          borderRadius: AppRadii.borderSm,
           child: Container(
             height: 44,
             padding: const EdgeInsets.symmetric(
@@ -90,7 +91,7 @@ class _BannerContent extends ConsumerWidget {
             ),
             decoration: BoxDecoration(
               color: AppColors.surfaceElevatedDark,
-              borderRadius: BorderRadius.circular(AppSpacing.sm),
+              borderRadius: AppRadii.borderSm,
               border: Border.all(color: AppColors.borderDark),
             ),
             child: Row(

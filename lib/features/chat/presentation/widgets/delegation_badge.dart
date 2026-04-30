@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:briluxforge/core/theme/app_colors.dart';
+import 'package:briluxforge/core/theme/app_tokens.dart';
 import 'package:briluxforge/features/delegation/data/engine/response_stitcher.dart';
 import 'package:briluxforge/features/delegation/data/models/delegation_result.dart';
 import 'package:briluxforge/features/delegation/data/models/sub_task.dart';
@@ -211,7 +212,7 @@ class _RoutingDetailDialog extends StatelessWidget {
 
     return Dialog(
       backgroundColor: AppColors.surfaceDark,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      shape: RoundedRectangleBorder(borderRadius: AppRadii.borderLg),
       child: ConstrainedBox(
         constraints: const BoxConstraints(maxWidth: 480, maxHeight: 560),
         child: Padding(
@@ -341,12 +342,12 @@ class _BadgeShell extends StatelessWidget {
       message: 'Routing info',
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(6),
+        borderRadius: AppRadii.borderSm,
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
           decoration: BoxDecoration(
             color: AppColors.delegationBadgeBg,
-            borderRadius: BorderRadius.circular(6),
+            borderRadius: AppRadii.borderSm,
             border: Border.all(color: AppColors.borderDark),
           ),
           child: child,

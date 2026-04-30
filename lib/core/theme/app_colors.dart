@@ -55,6 +55,36 @@ abstract final class AppColors {
   static const Color savingsGreen = Color(0xFF00D4AA);
   static const Color savingsGreenDim = Color(0xFF00A882);
 
+  // Provider identification dots (sidebar & settings model picker)
+  static const Color providerAnthropicDot = Color(0xFFD97706);
+  static const Color providerOpenAiDot    = Color(0xFF10B981);
+  static const Color providerDeepSeekDot  = Color(0xFF3B82F6);
+  static const Color providerGoogleDot    = Color(0xFF6366F1);
+  static const Color providerGroqDot      = Color(0xFFF59E0B);
+
+  // Provider card / use-case illustration accent palette
+  // Used in ApiKeyCard borders, UseCaseCard accents, onboarding highlights.
+  static const Color accentBlue    = Color(0xFF60A5FA); // DeepSeek · Coding
+  static const Color accentGreen   = Color(0xFF34D399); // Google   · Research
+  static const Color accentViolet  = Color(0xFFA78BFA); // Anthropic· Writing
+  static const Color accentLime    = Color(0xFF4ADE80); // OpenAI
+  static const Color accentAmber   = Color(0xFFFBBF24); // Groq     · Building
+  static const Color accentPink    = Color(0xFFF472B6); // General use-case
+
+  // Code block syntax highlighting — VS Code Dark+ token palette
+  // Used exclusively by the syntax-highlighter in message_bubble.dart.
+  static const Color syntaxKeyword  = Color(0xFF569CD6);
+  static const Color syntaxString   = Color(0xFFCE9178);
+  static const Color syntaxComment  = Color(0xFF6A9955);
+  static const Color syntaxNumber   = Color(0xFFB5CEA8);
+  static const Color syntaxFunction = Color(0xFFDCDCAA);
+  static const Color syntaxClass    = Color(0xFF4EC9B0);
+  static const Color syntaxTag      = Color(0xFF808080);
+  static const Color syntaxVariable = Color(0xFF9CDCFE);
+  static const Color syntaxSymbol   = Color(0xFF56B6C2);
+  static const Color syntaxDocTag   = Color(0xFF608B4E);
+  static const Color syntaxMeta     = Color(0xFF9B9B9B);
+
   // ── Phase 12 — Semantic role tokens ──────────────────────────────────────
 
   // Surface hierarchy

@@ -9,6 +9,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:briluxforge/core/constants/app_constants.dart';
 import 'package:briluxforge/core/theme/app_colors.dart';
 import 'package:briluxforge/core/theme/app_spacing.dart';
+import 'package:briluxforge/core/theme/app_tokens.dart';
 import 'package:briluxforge/features/updater/data/models/update_state.dart';
 import 'package:briluxforge/features/updater/presentation/widgets/release_notes_view.dart';
 import 'package:briluxforge/features/updater/providers/updater_provider.dart';
@@ -51,7 +52,7 @@ class _UpdateModal extends ConsumerWidget {
       backgroundColor: AppColors.surfaceElevatedDark,
       elevation: 2,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: AppRadii.borderMd,
         side: const BorderSide(color: AppColors.borderDark),
       ),
       child: ConstrainedBox(

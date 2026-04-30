@@ -10,6 +10,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:briluxforge/core/constants/app_constants.dart';
 import 'package:briluxforge/core/theme/app_colors.dart';
 import 'package:briluxforge/core/theme/app_spacing.dart';
+import 'package:briluxforge/core/theme/app_tokens.dart';
+import 'package:briluxforge/core/widgets/app_toggle.dart';
 import 'package:briluxforge/features/updater/data/models/update_state.dart';
 import 'package:briluxforge/features/updater/data/update_constants.dart';
 import 'package:briluxforge/features/updater/domain/updater_service.dart';
@@ -83,7 +85,7 @@ class _SettingsUpdatesSectionState
             backgroundColor: AppColors.surfaceElevatedDark,
             behavior: SnackBarBehavior.floating,
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(AppSpacing.sm),
+              borderRadius: AppRadii.borderSm,
             ),
           ),
         );
@@ -186,10 +188,9 @@ class _SettingsUpdatesSectionState
                   ),
                 ),
                 if (_prefsLoaded)
-                  Switch(
+                  AppToggle(
                     value: _autoInstall,
                     onChanged: _setAutoInstall,
-                    activeColor: AppColors.primary,
                   )
                 else
                   const SizedBox(
@@ -363,7 +364,7 @@ class _UpdatesSectionCard extends StatelessWidget {
         Container(
           decoration: BoxDecoration(
             color: AppColors.surfaceDark,
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: AppRadii.borderMd,
             border: Border.all(color: AppColors.borderDark),
           ),
           child: child,

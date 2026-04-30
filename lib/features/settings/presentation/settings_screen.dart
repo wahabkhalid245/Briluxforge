@@ -1,4 +1,4 @@
-// lib/features/settings/presentation/settings_screen.dart
+// FILE: lib/features/settings/presentation/settings_screen.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -6,6 +6,9 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:briluxforge/core/constants/app_constants.dart';
 import 'package:briluxforge/core/routing/app_router.dart';
 import 'package:briluxforge/core/theme/app_colors.dart';
+import 'package:briluxforge/core/theme/app_tokens.dart';
+import 'package:briluxforge/core/widgets/app_button.dart';
+import 'package:briluxforge/core/widgets/app_dialog.dart';
 import 'package:briluxforge/features/api_keys/data/models/api_key_model.dart';
 import 'package:briluxforge/features/api_keys/providers/api_key_provider.dart';
 import 'package:briluxforge/features/auth/providers/auth_provider.dart';
@@ -23,7 +26,7 @@ class SettingsScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
-      backgroundColor: AppColors.backgroundDark,
+      backgroundColor: AppColors.surfaceBase,
       body: Column(
         children: [
           const _SettingsHeader(),
@@ -32,26 +35,31 @@ class SettingsScreen extends ConsumerWidget {
               child: ConstrainedBox(
                 constraints: const BoxConstraints(maxWidth: 680),
                 child: ListView(
-                  padding: const EdgeInsets.fromLTRB(24, 0, 24, 48),
-                  children: [
-                    const SizedBox(height: 24),
-                    const _AccountSection(),
-                    const SizedBox(height: 4),
-                    const _LicenseSection(),
-                    const SizedBox(height: 4),
-                    const _DefaultModelSection(),
-                    const SizedBox(height: 4),
-                    const _UseCaseSection(),
-                    const SizedBox(height: 4),
-                    const _AppearanceSection(),
-                    const SizedBox(height: 4),
-                    const SettingsUpdatesSection(),
-                    const SizedBox(height: 4),
-                    const _FeaturesSection(),
-                    const SizedBox(height: 4),
-                    const _HelpSection(),
-                    const SizedBox(height: 4),
-                    const _AboutSection(),
+                  padding: const EdgeInsets.fromLTRB(
+                    AppSpacing.xl,
+                    0,
+                    AppSpacing.xl,
+                    AppSpacing.xxxl,
+                  ),
+                  children: const [
+                    SizedBox(height: AppSpacing.xl),
+                    _AccountSection(),
+                    SizedBox(height: AppSpacing.xs),
+                    _LicenseSection(),
+                    SizedBox(height: AppSpacing.xs),
+                    _DefaultModelSection(),
+                    SizedBox(height: AppSpacing.xs),
+                    _UseCaseSection(),
+                    SizedBox(height: AppSpacing.xs),
+                    _AppearanceSection(),
+                    SizedBox(height: AppSpacing.xs),
+                    SettingsUpdatesSection(),
+                    SizedBox(height: AppSpacing.xs),
+                    _FeaturesSection(),
+                    SizedBox(height: AppSpacing.xs),
+                    _HelpSection(),
+                    SizedBox(height: AppSpacing.xs),
+                    _AboutSection(),
                   ],
                 ),
               ),
@@ -70,30 +78,35 @@ class _SettingsHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Container(
       height: 56,
-      decoration: const BoxDecoration(
-        color: AppColors.backgroundDark,
-        border: Border(bottom: BorderSide(color: AppColors.borderDark)),
+      decoration: BoxDecoration(
+        color: AppColors.surfaceBase,
+        border: Border(
+          bottom: BorderSide(
+            color: isDark ? AppColors.borderSubtle : AppColors.borderLight,
+          ),
+        ),
       ),
-      padding: const EdgeInsets.symmetric(horizontal: 16),
+      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
       child: Row(
         children: [
           IconButton(
             onPressed: () => Navigator.maybePop(context),
             icon: const Icon(Icons.arrow_back, size: 18),
             style: IconButton.styleFrom(
-              foregroundColor: AppColors.textSecondaryDark,
-              padding: const EdgeInsets.all(8),
+              foregroundColor: AppColors.textSecondary,
+              padding: const EdgeInsets.all(AppSpacing.sm),
               minimumSize: const Size(36, 36),
             ),
             tooltip: 'Back',
           ),
-          const SizedBox(width: 8),
+          const SizedBox(width: AppSpacing.sm),
           Text(
             'Settings',
             style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                  color: AppColors.textPrimaryDark,
+                  color: AppColors.textPrimary,
                 ),
           ),
         ],
@@ -112,15 +125,16 @@ class _Section extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: const EdgeInsets.fromLTRB(0, 20, 0, 8),
+          padding: const EdgeInsets.fromLTRB(0, AppSpacing.lg, 0, AppSpacing.sm),
           child: Text(
             label.toUpperCase(),
             style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                  color: AppColors.textTertiaryDark,
+                  color: AppColors.textTertiary,
                   letterSpacing: 0.9,
                   fontWeight: FontWeight.w600,
                 ),
@@ -128,9 +142,11 @@ class _Section extends StatelessWidget {
         ),
         Container(
           decoration: BoxDecoration(
-            color: AppColors.surfaceDark,
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: AppColors.borderDark),
+            color: isDark ? AppColors.surfaceRaised : AppColors.surfaceLight,
+            borderRadius: AppRadii.borderMd,
+            border: Border.all(
+              color: isDark ? AppColors.borderSubtle : AppColors.borderLight,
+            ),
           ),
           child: child,
         ),
@@ -152,8 +168,15 @@ class _SectionRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final dividerColor =
+        isDark ? AppColors.borderSubtle : AppColors.borderLight;
+
     final content = Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 13),
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.lg,
+        vertical: AppSpacing.md,
+      ),
       child: child,
     );
 
@@ -165,7 +188,9 @@ class _SectionRow extends StatelessWidget {
             child: InkWell(
               onTap: onTap,
               borderRadius: isLast
-                  ? const BorderRadius.vertical(bottom: Radius.circular(12))
+                  ? const BorderRadius.vertical(
+                      bottom: Radius.circular(AppRadii.md),
+                    )
                   : BorderRadius.zero,
               child: content,
             ),
@@ -173,11 +198,11 @@ class _SectionRow extends StatelessWidget {
         else
           content,
         if (!isLast)
-          const Divider(
+          Divider(
             height: 1,
-            indent: 16,
-            endIndent: 16,
-            color: AppColors.dividerDark,
+            indent: AppSpacing.lg,
+            endIndent: AppSpacing.lg,
+            color: dividerColor,
           ),
       ],
     );
@@ -206,25 +231,27 @@ class _AccountSection extends ConsumerWidget {
               data: (user) => Row(
                 children: [
                   _Avatar(email: user?.email ?? ''),
-                  const SizedBox(width: 12),
+                  const SizedBox(width: AppSpacing.md),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
                           user?.email ?? 'Not signed in',
-                          style:
-                              Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                    color: AppColors.textPrimaryDark,
-                                    fontWeight: FontWeight.w500,
-                                  ),
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodyMedium
+                              ?.copyWith(
+                                color: AppColors.textPrimary,
+                                fontWeight: FontWeight.w500,
+                              ),
                         ),
                         Text(
                           'Signed in with email',
-                          style:
-                              Theme.of(context).textTheme.labelSmall?.copyWith(
-                                    color: AppColors.textTertiaryDark,
-                                  ),
+                          style: Theme.of(context)
+                              .textTheme
+                              .labelSmall
+                              ?.copyWith(color: AppColors.textTertiary),
                         ),
                       ],
                     ),
@@ -241,13 +268,13 @@ class _AccountSection extends ConsumerWidget {
                 const Icon(
                   Icons.logout_rounded,
                   size: 16,
-                  color: AppColors.error,
+                  color: AppColors.statusErrorFg,
                 ),
-                const SizedBox(width: 10),
+                const SizedBox(width: AppSpacing.md),
                 Text(
                   'Sign Out',
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: AppColors.error,
+                        color: AppColors.statusErrorFg,
                         fontWeight: FontWeight.w500,
                       ),
                 ),
@@ -260,37 +287,20 @@ class _AccountSection extends ConsumerWidget {
   }
 
   Future<void> _confirmLogout(BuildContext context, WidgetRef ref) async {
-    final confirmed = await showDialog<bool>(
+    final confirmed = await showAppDialog<bool>(
       context: context,
-      builder: (ctx) => AlertDialog(
-        backgroundColor: AppColors.surfaceElevatedDark,
-        title: Text(
-          'Sign out?',
-          style: Theme.of(ctx).textTheme.titleMedium?.copyWith(
-                color: AppColors.textPrimaryDark,
-              ),
-        ),
-        content: Text(
-          'Your API keys, chat history, and skills stay on this device.',
-          style: Theme.of(ctx).textTheme.bodyMedium?.copyWith(
-                color: AppColors.textSecondaryDark,
-              ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx, false),
-            child: const Text(
-              'Cancel',
-              style: TextStyle(color: AppColors.textSecondaryDark),
+      title: 'Sign out?',
+      body: Text(
+        'Your API keys, chat history, and skills stay on this device.',
+        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+              color: AppColors.textSecondary,
             ),
-          ),
-          FilledButton(
-            onPressed: () => Navigator.pop(ctx, true),
-            style: FilledButton.styleFrom(backgroundColor: AppColors.error),
-            child: const Text('Sign Out'),
-          ),
-        ],
       ),
+      secondaryLabel: 'Cancel',
+      onSecondary: () => Navigator.pop(context, false),
+      primaryLabel: 'Sign Out',
+      onPrimary: () => Navigator.pop(context, true),
+      maxWidth: 400,
     );
 
     if (confirmed == true) {
@@ -306,21 +316,21 @@ class _Avatar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final initial =
-        email.isNotEmpty ? email[0].toUpperCase() : '?';
+    final initial = email.isNotEmpty ? email[0].toUpperCase() : '?';
 
     return Container(
       width: 36,
       height: 36,
+      // Avatar: fully-rounded containers are explicitly exempt per §12.4.2.
       decoration: BoxDecoration(
-        color: AppColors.primary.withValues(alpha: 0.2),
-        borderRadius: BorderRadius.circular(50),
+        color: AppColors.brandPrimary.withValues(alpha: 0.2),
+        shape: BoxShape.circle,
       ),
       alignment: Alignment.center,
       child: Text(
         initial,
         style: Theme.of(context).textTheme.labelLarge?.copyWith(
-              color: AppColors.primary,
+              color: AppColors.brandPrimary,
               fontWeight: FontWeight.w600,
             ),
       ),
@@ -350,7 +360,7 @@ class _LicenseSection extends ConsumerWidget {
               data: (license) => Row(
                 children: [
                   _LicenseStatusBadge(license: license),
-                  const SizedBox(width: 12),
+                  const SizedBox(width: AppSpacing.md),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -361,7 +371,7 @@ class _LicenseSection extends ConsumerWidget {
                               .textTheme
                               .bodyMedium
                               ?.copyWith(
-                                color: AppColors.textPrimaryDark,
+                                color: AppColors.textPrimary,
                                 fontWeight: FontWeight.w500,
                               ),
                         ),
@@ -370,7 +380,7 @@ class _LicenseSection extends ConsumerWidget {
                           style: Theme.of(context)
                               .textTheme
                               .labelSmall
-                              ?.copyWith(color: AppColors.textTertiaryDark),
+                              ?.copyWith(color: AppColors.textTertiary),
                         ),
                       ],
                     ),
@@ -388,13 +398,13 @@ class _LicenseSection extends ConsumerWidget {
                 const Icon(
                   Icons.vpn_key_outlined,
                   size: 16,
-                  color: AppColors.primary,
+                  color: AppColors.brandPrimary,
                 ),
-                const SizedBox(width: 10),
+                const SizedBox(width: AppSpacing.md),
                 Text(
                   'Enter / Update License Key',
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: AppColors.primary,
+                        color: AppColors.brandPrimary,
                         fontWeight: FontWeight.w500,
                       ),
                 ),
@@ -402,7 +412,7 @@ class _LicenseSection extends ConsumerWidget {
                 const Icon(
                   Icons.chevron_right,
                   size: 16,
-                  color: AppColors.textTertiaryDark,
+                  color: AppColors.textTertiary,
                 ),
               ],
             ),
@@ -421,12 +431,10 @@ class _LicenseSection extends ConsumerWidget {
       };
 
   String _licenseSubtitle(LicenseModel license) => switch (license.status) {
-        LicenseStatus.trial =>
-          'No credit card required during trial',
-        LicenseStatus.active =>
-          license.licenseKey != null
-              ? 'Activated with Gumroad license key'
-              : 'License active',
+        LicenseStatus.trial => 'No credit card required during trial',
+        LicenseStatus.active => license.licenseKey != null
+            ? 'Activated with Gumroad license key'
+            : 'License active',
         LicenseStatus.expired => 'Activate a license key to continue',
         LicenseStatus.unknown =>
           'Re-validate when connected to the internet',
@@ -441,10 +449,14 @@ class _LicenseStatusBadge extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final (color, icon) = switch (license.status) {
-      LicenseStatus.trial => (AppColors.warning, Icons.hourglass_top_rounded),
-      LicenseStatus.active => (AppColors.success, Icons.verified_rounded),
-      LicenseStatus.expired => (AppColors.error, Icons.block_rounded),
-      LicenseStatus.unknown => (AppColors.textTertiaryDark, Icons.help_outline),
+      LicenseStatus.trial =>
+        (AppColors.statusWarnFg, Icons.hourglass_top_rounded),
+      LicenseStatus.active =>
+        (AppColors.statusSuccessFg, Icons.verified_rounded),
+      LicenseStatus.expired =>
+        (AppColors.statusErrorFg, Icons.block_rounded),
+      LicenseStatus.unknown =>
+        (AppColors.textTertiary, Icons.help_outline),
     };
 
     return Container(
@@ -452,7 +464,7 @@ class _LicenseStatusBadge extends StatelessWidget {
       height: 36,
       decoration: BoxDecoration(
         color: color.withValues(alpha: 0.12),
-        borderRadius: BorderRadius.circular(10),
+        borderRadius: AppRadii.borderMd,
       ),
       alignment: Alignment.center,
       child: Icon(icon, size: 18, color: color),
@@ -481,10 +493,10 @@ class _DefaultModelSection extends ConsumerWidget {
             Text(
               'Fallback when delegation cannot decide',
               style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                    color: AppColors.textTertiaryDark,
+                    color: AppColors.textTertiary,
                   ),
             ),
-            const SizedBox(height: 10),
+            const SizedBox(height: AppSpacing.md),
             profilesAsync.when(
               loading: () => const _RowLoadingPlaceholder(),
               error: (_, __) => const _RowErrorPlaceholder(
@@ -502,7 +514,8 @@ class _DefaultModelSection extends ConsumerWidget {
                       .toSet();
 
                   final availableModels = profiles.routeableModels
-                      .where((m) => verifiedProviders.contains(m.provider))
+                      .where(
+                          (m) => verifiedProviders.contains(m.provider))
                       .toList();
 
                   if (availableModels.isEmpty) {
@@ -546,28 +559,33 @@ class _ModelDropdown extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     final effectiveId =
         models.any((m) => m.id == currentId) ? currentId : models.first.id;
 
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12),
+      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
       decoration: BoxDecoration(
-        color: AppColors.surfaceElevatedDark,
-        borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: AppColors.borderDark),
+        color: isDark ? AppColors.surfaceOverlay : AppColors.surfaceElevatedLight,
+        borderRadius: AppRadii.borderMd,
+        border: Border.all(
+          color: isDark ? AppColors.borderSubtle : AppColors.borderLight,
+        ),
       ),
       child: DropdownButtonHideUnderline(
         child: DropdownButton<String>(
           value: effectiveId,
           isExpanded: true,
-          dropdownColor: AppColors.surfaceElevatedDark,
+          dropdownColor: isDark
+              ? AppColors.surfaceOverlay
+              : AppColors.surfaceElevatedLight,
           style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: AppColors.textPrimaryDark,
+                color: AppColors.textPrimary,
               ),
           icon: const Icon(
             Icons.expand_more,
             size: 18,
-            color: AppColors.textSecondaryDark,
+            color: AppColors.textSecondary,
           ),
           items: models
               .map(
@@ -576,24 +594,24 @@ class _ModelDropdown extends StatelessWidget {
                   child: Row(
                     children: [
                       _ProviderDot(provider: m.provider),
-                      const SizedBox(width: 8),
+                      const SizedBox(width: AppSpacing.sm),
                       Text(m.displayName),
-                      const SizedBox(width: 8),
+                      const SizedBox(width: AppSpacing.sm),
                       if (m.isPremium)
                         Container(
                           padding: const EdgeInsets.symmetric(
-                            horizontal: 6,
-                            vertical: 2,
+                            horizontal: AppSpacing.sm,
+                            vertical: AppSpacing.xxs,
                           ),
                           decoration: BoxDecoration(
-                            color: AppColors.primary.withValues(alpha: 0.12),
-                            borderRadius: BorderRadius.circular(4),
+                            color: AppColors.brandPrimary.withValues(alpha: 0.12),
+                            borderRadius: AppRadii.borderXs,
                           ),
                           child: const Text(
                             'Premium',
                             style: TextStyle(
                               fontSize: 10,
-                              color: AppColors.primary,
+                              color: AppColors.brandPrimary,
                               fontWeight: FontWeight.w600,
                             ),
                           ),
@@ -620,21 +638,18 @@ class _ProviderDot extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final color = switch (provider) {
-      'anthropic' => const Color(0xFFD97706),
-      'openai' => const Color(0xFF10B981),
-      'deepseek' => const Color(0xFF3B82F6),
-      'google' => const Color(0xFF6366F1),
-      'groq' => const Color(0xFFF59E0B),
-      _ => AppColors.textTertiaryDark,
+      'anthropic' => AppColors.providerAnthropicDot,
+      'openai'    => AppColors.providerOpenAiDot,
+      'deepseek'  => AppColors.providerDeepSeekDot,
+      'google'    => AppColors.providerGoogleDot,
+      'groq'      => AppColors.providerGroqDot,
+      _           => AppColors.textTertiary,
     };
 
     return Container(
       width: 8,
       height: 8,
-      decoration: BoxDecoration(
-        color: color,
-        shape: BoxShape.circle,
-      ),
+      decoration: BoxDecoration(color: color, shape: BoxShape.circle),
     );
   }
 }
@@ -652,23 +667,16 @@ class _NoModelsHint extends StatelessWidget {
         Text(
           'No API keys connected. Add keys to select a default model.',
           style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                color: AppColors.textTertiaryDark,
+                color: AppColors.textTertiary,
               ),
         ),
-        const SizedBox(height: 8),
-        TextButton.icon(
+        const SizedBox(height: AppSpacing.sm),
+        AppButton(
+          label: 'Add API Keys',
           onPressed: onAddKeys,
-          icon: const Icon(Icons.add, size: 14),
-          label: const Text('Add API Keys'),
-          style: TextButton.styleFrom(
-            foregroundColor: AppColors.primary,
-            padding:
-                const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-            textStyle: const TextStyle(
-              fontSize: 13,
-              fontWeight: FontWeight.w500,
-            ),
-          ),
+          variant: AppButtonVariant.ghost,
+          size: AppButtonSize.compact,
+          leadingIcon: Icons.add,
         ),
       ],
     );
@@ -688,11 +696,11 @@ class _UseCaseSection extends ConsumerWidget {
       label: 'Use Case',
       child: onboardingAsync.when(
         loading: () => const Padding(
-          padding: EdgeInsets.all(20),
+          padding: EdgeInsets.all(AppSpacing.xl),
           child: _RowLoadingPlaceholder(),
         ),
         error: (_, __) => const Padding(
-          padding: EdgeInsets.all(16),
+          padding: EdgeInsets.all(AppSpacing.lg),
           child: _RowErrorPlaceholder(
             message: 'Could not load use case settings.',
           ),
@@ -726,21 +734,21 @@ class _UseCaseSection extends ConsumerWidget {
                         shape: BoxShape.circle,
                         border: Border.all(
                           color: isSelected
-                              ? AppColors.primary
-                              : AppColors.borderDark,
+                              ? AppColors.brandPrimary
+                              : AppColors.borderSubtle,
                           width: isSelected ? 5 : 2,
                         ),
                         color: isSelected
-                            ? AppColors.primary
+                            ? AppColors.brandPrimary
                             : Colors.transparent,
                       ),
                     ),
-                    const SizedBox(width: 12),
+                    const SizedBox(width: AppSpacing.md),
                     Text(
                       _useCaseIcon(useCase),
                       style: const TextStyle(fontSize: 16),
                     ),
-                    const SizedBox(width: 10),
+                    const SizedBox(width: AppSpacing.md),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -752,8 +760,8 @@ class _UseCaseSection extends ConsumerWidget {
                                 .bodyMedium
                                 ?.copyWith(
                                   color: isSelected
-                                      ? AppColors.textPrimaryDark
-                                      : AppColors.textSecondaryDark,
+                                      ? AppColors.textPrimary
+                                      : AppColors.textSecondary,
                                   fontWeight: isSelected
                                       ? FontWeight.w600
                                       : FontWeight.w400,
@@ -765,7 +773,7 @@ class _UseCaseSection extends ConsumerWidget {
                                 .textTheme
                                 .labelSmall
                                 ?.copyWith(
-                                  color: AppColors.textTertiaryDark,
+                                  color: AppColors.textTertiary,
                                   fontSize: 11,
                                 ),
                           ),
@@ -783,11 +791,11 @@ class _UseCaseSection extends ConsumerWidget {
   }
 
   String _useCaseIcon(UseCaseType useCase) => switch (useCase) {
-        UseCaseType.coding => '🖥️',
+        UseCaseType.coding   => '🖥️',
         UseCaseType.research => '🔬',
-        UseCaseType.writing => '✍️',
+        UseCaseType.writing  => '✍️',
         UseCaseType.building => '🏗️',
-        UseCaseType.general => '🌐',
+        UseCaseType.general  => '🌐',
       };
 }
 
@@ -814,19 +822,19 @@ class _AppearanceSection extends ConsumerWidget {
                 const Icon(
                   Icons.brightness_6_outlined,
                   size: 18,
-                  color: AppColors.textSecondaryDark,
+                  color: AppColors.textSecondary,
                 ),
-                const SizedBox(width: 12),
+                const SizedBox(width: AppSpacing.md),
                 Text(
                   'Theme',
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: AppColors.textPrimaryDark,
+                        color: AppColors.textPrimary,
                         fontWeight: FontWeight.w500,
                       ),
                 ),
               ],
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: AppSpacing.md),
             SegmentedButton<ThemeMode>(
               segments: const [
                 ButtonSegment(
@@ -882,27 +890,29 @@ class _FeaturesSection extends StatelessWidget {
                 const Icon(
                   Icons.psychology_outlined,
                   size: 18,
-                  color: AppColors.textSecondaryDark,
+                  color: AppColors.textSecondary,
                 ),
-                const SizedBox(width: 12),
+                const SizedBox(width: AppSpacing.md),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
                         'Skills',
-                        style:
-                            Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                  color: AppColors.textPrimaryDark,
-                                  fontWeight: FontWeight.w500,
-                                ),
+                        style: Theme.of(context)
+                            .textTheme
+                            .bodyMedium
+                            ?.copyWith(
+                              color: AppColors.textPrimary,
+                              fontWeight: FontWeight.w500,
+                            ),
                       ),
                       Text(
                         'Manage custom system prompt skills',
                         style: Theme.of(context)
                             .textTheme
                             .labelSmall
-                            ?.copyWith(color: AppColors.textTertiaryDark),
+                            ?.copyWith(color: AppColors.textTertiary),
                       ),
                     ],
                   ),
@@ -910,7 +920,7 @@ class _FeaturesSection extends StatelessWidget {
                 const Icon(
                   Icons.chevron_right,
                   size: 16,
-                  color: AppColors.textTertiaryDark,
+                  color: AppColors.textTertiary,
                 ),
               ],
             ),
@@ -923,27 +933,29 @@ class _FeaturesSection extends StatelessWidget {
                 const Icon(
                   Icons.key_rounded,
                   size: 18,
-                  color: AppColors.textSecondaryDark,
+                  color: AppColors.textSecondary,
                 ),
-                const SizedBox(width: 12),
+                const SizedBox(width: AppSpacing.md),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
                         'API Keys',
-                        style:
-                            Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                  color: AppColors.textPrimaryDark,
-                                  fontWeight: FontWeight.w500,
-                                ),
+                        style: Theme.of(context)
+                            .textTheme
+                            .bodyMedium
+                            ?.copyWith(
+                              color: AppColors.textPrimary,
+                              fontWeight: FontWeight.w500,
+                            ),
                       ),
                       Text(
                         'Add and manage your API provider keys',
                         style: Theme.of(context)
                             .textTheme
                             .labelSmall
-                            ?.copyWith(color: AppColors.textTertiaryDark),
+                            ?.copyWith(color: AppColors.textTertiary),
                       ),
                     ],
                   ),
@@ -951,7 +963,7 @@ class _FeaturesSection extends StatelessWidget {
                 const Icon(
                   Icons.chevron_right,
                   size: 16,
-                  color: AppColors.textTertiaryDark,
+                  color: AppColors.textTertiary,
                 ),
               ],
             ),
@@ -967,8 +979,8 @@ class _FeaturesSection extends StatelessWidget {
 class _HelpSection extends StatelessWidget {
   const _HelpSection();
 
-  // Placeholder URL — replace with actual tutorial URL when available.
-  static const String _tutorialUrlPlaceholder = 'https://briluxlabs.com/tutorials';
+  static const String _tutorialUrl = 'https://briluxlabs.com/tutorials';
+  static const String _docsUrl     = 'https://briluxlabs.com/docs';
 
   @override
   Widget build(BuildContext context) {
@@ -977,42 +989,44 @@ class _HelpSection extends StatelessWidget {
       child: Column(
         children: [
           _SectionRow(
-            onTap: () => _openUrl(_tutorialUrlPlaceholder),
+            onTap: () => _openUrl(_tutorialUrl),
             child: Row(
               children: [
                 Container(
                   width: 36,
                   height: 36,
                   decoration: BoxDecoration(
-                    color: AppColors.error.withValues(alpha: 0.12),
-                    borderRadius: BorderRadius.circular(10),
+                    color: AppColors.statusErrorBg,
+                    borderRadius: AppRadii.borderMd,
                   ),
                   alignment: Alignment.center,
                   child: const Icon(
                     Icons.play_circle_outline_rounded,
                     size: 20,
-                    color: AppColors.error,
+                    color: AppColors.statusErrorFg,
                   ),
                 ),
-                const SizedBox(width: 12),
+                const SizedBox(width: AppSpacing.md),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
                         'Video Tutorials',
-                        style:
-                            Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                  color: AppColors.textPrimaryDark,
-                                  fontWeight: FontWeight.w500,
-                                ),
+                        style: Theme.of(context)
+                            .textTheme
+                            .bodyMedium
+                            ?.copyWith(
+                              color: AppColors.textPrimary,
+                              fontWeight: FontWeight.w500,
+                            ),
                       ),
                       Text(
                         'Founder-recorded guides on setup and usage',
                         style: Theme.of(context)
                             .textTheme
                             .labelSmall
-                            ?.copyWith(color: AppColors.textTertiaryDark),
+                            ?.copyWith(color: AppColors.textTertiary),
                       ),
                     ],
                   ),
@@ -1020,49 +1034,51 @@ class _HelpSection extends StatelessWidget {
                 const Icon(
                   Icons.open_in_new,
                   size: 14,
-                  color: AppColors.textTertiaryDark,
+                  color: AppColors.textTertiary,
                 ),
               ],
             ),
           ),
           _SectionRow(
             isLast: true,
-            onTap: () => _openUrl('https://briluxlabs.com/docs'),
+            onTap: () => _openUrl(_docsUrl),
             child: Row(
               children: [
                 Container(
                   width: 36,
                   height: 36,
                   decoration: BoxDecoration(
-                    color: AppColors.info.withValues(alpha: 0.12),
-                    borderRadius: BorderRadius.circular(10),
+                    color: AppColors.statusInfoBg,
+                    borderRadius: AppRadii.borderMd,
                   ),
                   alignment: Alignment.center,
                   child: const Icon(
                     Icons.article_outlined,
                     size: 20,
-                    color: AppColors.info,
+                    color: AppColors.statusInfoFg,
                   ),
                 ),
-                const SizedBox(width: 12),
+                const SizedBox(width: AppSpacing.md),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
                         'Documentation',
-                        style:
-                            Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                  color: AppColors.textPrimaryDark,
-                                  fontWeight: FontWeight.w500,
-                                ),
+                        style: Theme.of(context)
+                            .textTheme
+                            .bodyMedium
+                            ?.copyWith(
+                              color: AppColors.textPrimary,
+                              fontWeight: FontWeight.w500,
+                            ),
                       ),
                       Text(
                         'Coming soon — placeholder for docs link',
                         style: Theme.of(context)
                             .textTheme
                             .labelSmall
-                            ?.copyWith(color: AppColors.textTertiaryDark),
+                            ?.copyWith(color: AppColors.textTertiary),
                       ),
                     ],
                   ),
@@ -1070,7 +1086,7 @@ class _HelpSection extends StatelessWidget {
                 const Icon(
                   Icons.open_in_new,
                   size: 14,
-                  color: AppColors.textTertiaryDark,
+                  color: AppColors.textTertiary,
                 ),
               ],
             ),
@@ -1106,8 +1122,8 @@ class _AboutSection extends StatelessWidget {
                   width: 36,
                   height: 36,
                   decoration: BoxDecoration(
-                    color: AppColors.primary,
-                    borderRadius: BorderRadius.circular(10),
+                    color: AppColors.brandPrimary,
+                    borderRadius: AppRadii.borderMd,
                   ),
                   alignment: Alignment.center,
                   child: const Icon(
@@ -1116,17 +1132,14 @@ class _AboutSection extends StatelessWidget {
                     size: 20,
                   ),
                 ),
-                const SizedBox(width: 12),
+                const SizedBox(width: AppSpacing.md),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       AppConstants.appName,
-                      style: Theme.of(context)
-                          .textTheme
-                          .bodyMedium
-                          ?.copyWith(
-                            color: AppColors.textPrimaryDark,
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                            color: AppColors.textPrimary,
                             fontWeight: FontWeight.w600,
                           ),
                     ),
@@ -1135,7 +1148,7 @@ class _AboutSection extends StatelessWidget {
                       style: Theme.of(context)
                           .textTheme
                           .labelSmall
-                          ?.copyWith(color: AppColors.textTertiaryDark),
+                          ?.copyWith(color: AppColors.textTertiary),
                     ),
                   ],
                 ),
@@ -1150,7 +1163,7 @@ class _AboutSection extends StatelessWidget {
                   child: Text(
                     'Multi-API AI router · Local-first · Zero backend prompt processing',
                     style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                          color: AppColors.textTertiaryDark,
+                          color: AppColors.textTertiary,
                           height: 1.5,
                         ),
                   ),
@@ -1180,15 +1193,15 @@ class _RowLoadingPlaceholder extends StatelessWidget {
             height: 16,
             child: CircularProgressIndicator(
               strokeWidth: 2,
-              color: AppColors.primary,
+              color: AppColors.brandPrimary,
             ),
           ),
-          SizedBox(width: 10),
+          SizedBox(width: AppSpacing.md),
           Text(
             'Loading…',
             style: TextStyle(
               fontSize: 13,
-              color: AppColors.textTertiaryDark,
+              color: AppColors.textTertiary,
             ),
           ),
         ],
@@ -1209,14 +1222,14 @@ class _RowErrorPlaceholder extends StatelessWidget {
         const Icon(
           Icons.error_outline,
           size: 16,
-          color: AppColors.error,
+          color: AppColors.statusErrorFg,
         ),
-        const SizedBox(width: 8),
+        const SizedBox(width: AppSpacing.sm),
         Expanded(
           child: Text(
             message,
             style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                  color: AppColors.error,
+                  color: AppColors.statusErrorFg,
                 ),
           ),
         ),

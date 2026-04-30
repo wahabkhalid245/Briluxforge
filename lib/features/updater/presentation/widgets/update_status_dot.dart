@@ -11,7 +11,7 @@ import 'package:briluxforge/core/theme/app_colors.dart';
 
 /// Muted teal used while a download is in progress.
 /// Same hue as [AppColors.accent], dimmed for the "pulsing/pending" state.
-const Color _accentSoft = Color(0xFF00A882); // savingsGreenDim
+const Color _accentSoft = AppColors.savingsGreenDim;
 
 /// 6 px circular indicator shown in the sidebar footer during an update cycle.
 ///

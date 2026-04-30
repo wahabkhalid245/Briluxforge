@@ -1,5 +1,6 @@
 // lib/features/api_keys/data/models/api_key_model.dart
 import 'package:flutter/material.dart';
+import 'package:briluxforge/core/theme/app_colors.dart';
 
 enum VerificationStatus { unverified, verifying, verified, failed }
 
@@ -78,7 +79,7 @@ const List<ProviderConfig> kSupportedProviders = [
     description: 'Best for code, reasoning & everyday tasks',
     signupUrl: 'https://platform.deepseek.com',
     iconData: Icons.code_rounded,
-    color: Color(0xFF60A5FA),
+    color: AppColors.accentBlue,
   ),
   ProviderConfig(
     id: 'google',
@@ -86,7 +87,7 @@ const List<ProviderConfig> kSupportedProviders = [
     description: 'Best for long documents & summarization',
     signupUrl: 'https://aistudio.google.com',
     iconData: Icons.science_outlined,
-    color: Color(0xFF34D399),
+    color: AppColors.accentGreen,
   ),
   ProviderConfig(
     id: 'anthropic',
@@ -94,7 +95,7 @@ const List<ProviderConfig> kSupportedProviders = [
     description: 'Best for nuanced writing & analysis',
     signupUrl: 'https://console.anthropic.com',
     iconData: Icons.edit_note_rounded,
-    color: Color(0xFFA78BFA),
+    color: AppColors.accentViolet,
   ),
   ProviderConfig(
     id: 'openai',
@@ -102,7 +103,7 @@ const List<ProviderConfig> kSupportedProviders = [
     description: 'GPT-4o and other OpenAI models',
     signupUrl: 'https://platform.openai.com',
     iconData: Icons.smart_toy_outlined,
-    color: Color(0xFF4ADE80),
+    color: AppColors.accentLime,
   ),
   ProviderConfig(
     id: 'groq',
@@ -110,6 +111,6 @@ const List<ProviderConfig> kSupportedProviders = [
     description: 'Ultra-fast Llama 3.3 inference',
     signupUrl: 'https://console.groq.com',
     iconData: Icons.bolt,
-    color: Color(0xFFFBBF24),
+    color: AppColors.accentAmber,
   ),
 ];

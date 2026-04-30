@@ -9,6 +9,7 @@ import 'package:briluxforge/core/widgets/app_button.dart';
 import 'package:briluxforge/core/widgets/app_status_card.dart';
 import 'package:briluxforge/core/widgets/app_success_graphic.dart';
 import 'package:briluxforge/features/api_keys/data/models/api_key_model.dart';
+import 'package:briluxforge/core/errors/app_exception.dart';
 import 'package:briluxforge/features/api_keys/providers/api_key_provider.dart';
 import 'package:briluxforge/features/onboarding/presentation/use_case_screen.dart';
 import 'package:briluxforge/features/onboarding/providers/onboarding_provider.dart';
@@ -386,7 +387,7 @@ class _WelcomePage extends StatelessWidget {
           const SizedBox(height: AppSpacing.lg),
           const _HighlightRow(
             icon: Icons.psychology_outlined,
-            color: Color(0xFFA78BFA),
+            color: AppColors.accentViolet,
             title: 'Skills system',
             subtitle:
                 'Reusable system prompts that follow you across every conversation.',
@@ -511,7 +512,7 @@ class _ApiGuidePage extends StatelessWidget {
             highlightColor: AppColors.savingsGreen,
             url: 'platform.deepseek.com',
             icon: Icons.code_rounded,
-            iconColor: Color(0xFF60A5FA),
+            iconColor: AppColors.accentBlue,
           ),
           const SizedBox(height: AppSpacing.md),
           const _ApiRecommendationCard(
@@ -523,7 +524,7 @@ class _ApiGuidePage extends StatelessWidget {
             highlightColor: AppColors.brandPrimary,
             url: 'aistudio.google.com',
             icon: Icons.science_outlined,
-            iconColor: Color(0xFF34D399),
+            iconColor: AppColors.accentGreen,
           ),
           if (useCase == UseCaseType.writing) ...[
             const SizedBox(height: AppSpacing.md),
@@ -534,10 +535,10 @@ class _ApiGuidePage extends StatelessWidget {
                   'Best for nuanced writing, analysis, and instruction-following',
               price: '\$3.00 / 1M input tokens',
               highlight: 'Recommended for writing',
-              highlightColor: Color(0xFFA78BFA),
+              highlightColor: AppColors.accentViolet,
               url: 'console.anthropic.com',
               icon: Icons.edit_note_rounded,
-              iconColor: Color(0xFFA78BFA),
+              iconColor: AppColors.accentViolet,
             ),
           ],
           const Spacer(),
@@ -926,11 +927,14 @@ class _AddKeyPageState extends ConsumerState<_AddKeyPage> {
         });
       }
     } catch (e) {
+      // AppException → use structured message; other exceptions get a
+      // generic fallback per §8.4 (no raw exception strings shown to users).
       if (mounted) {
         setState(() {
           _feedbackVariant = AppStatusVariant.error;
-          _feedbackMessage =
-              e.toString().replaceAll(RegExp(r'^Exception:\s*'), '');
+          _feedbackMessage = e is AppException
+              ? e.message
+              : 'Failed to save the API key. Check the key format and try again.';
         });
       }
     } finally {
@@ -985,7 +989,7 @@ class _DonePage extends StatelessWidget {
           const SizedBox(height: AppSpacing.lg),
           const _DoneItem(
             icon: Icons.psychology_outlined,
-            color: Color(0xFFA78BFA),
+            color: AppColors.accentViolet,
             label: 'Enable skills',
             detail: 'Sidebar → Skills',
           ),

@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:briluxforge/core/errors/app_exception.dart';
 import 'package:briluxforge/core/theme/app_colors.dart';
+import 'package:briluxforge/core/theme/app_tokens.dart';
 import 'package:briluxforge/core/widgets/error_details_card.dart';
 import 'package:briluxforge/features/api_keys/data/models/api_key_model.dart';
 import 'package:briluxforge/features/api_keys/presentation/widgets/api_key_card.dart';
@@ -99,7 +100,7 @@ class _AddKeyPanelState extends ConsumerState<_AddKeyPanel> {
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
         color: AppColors.surfaceElevatedDark,
-        borderRadius: BorderRadius.circular(18),
+        borderRadius: AppRadii.borderLg,
         border: Border.all(color: AppColors.borderDark),
       ),
       child: Column(
@@ -113,7 +114,7 @@ class _AddKeyPanelState extends ConsumerState<_AddKeyPanel> {
                 height: 40,
                 decoration: BoxDecoration(
                   color: AppColors.primary.withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(10),
+                  borderRadius: AppRadii.borderMd,
                 ),
                 child: const Icon(
                   Icons.add_rounded,
@@ -197,15 +198,15 @@ class _AddKeyPanelState extends ConsumerState<_AddKeyPanel> {
               filled: true,
               fillColor: AppColors.backgroundDark,
               border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10),
+                borderRadius: AppRadii.borderMd,
                 borderSide: const BorderSide(color: AppColors.borderDark),
               ),
               enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10),
+                borderRadius: AppRadii.borderMd,
                 borderSide: const BorderSide(color: AppColors.borderDark),
               ),
               focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10),
+                borderRadius: AppRadii.borderMd,
                 borderSide:
                     const BorderSide(color: AppColors.primary, width: 1.5),
               ),
@@ -283,7 +284,7 @@ class _AddKeyPanelState extends ConsumerState<_AddKeyPanel> {
           color: selected
               ? p.color.withValues(alpha: 0.14)
               : AppColors.backgroundDark,
-          borderRadius: BorderRadius.circular(8),
+          borderRadius: AppRadii.borderSm,
           border: Border.all(
             color: selected
                 ? p.color.withValues(alpha: 0.55)
@@ -348,10 +349,12 @@ class _AddKeyPanelState extends ConsumerState<_AddKeyPanel> {
       }
     } catch (e) {
       if (mounted) {
-        final AppException? appEx = e is AppException ? e : null;
+        // AppException subtype → use structured message; other exceptions get a
+        // generic fallback per §8.4 (no raw exception strings shown to users).
+        final appEx = e is AppException ? e : null;
         setState(() {
           _errorMessage = appEx?.message ??
-              e.toString().replaceAll(RegExp(r'^Exception:\s*'), '');
+              'Failed to save the API key. Check the key format and try again.';
           _errorTechnicalDetail = appEx?.technicalDetail;
         });
       }
@@ -427,7 +430,7 @@ class _EmptyKeysState extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 48, horizontal: 32),
       decoration: BoxDecoration(
         color: AppColors.surfaceElevatedDark,
-        borderRadius: BorderRadius.circular(18),
+        borderRadius: AppRadii.borderLg,
         border: Border.all(color: AppColors.borderDark),
       ),
       child: Column(
@@ -484,7 +487,7 @@ class _SuccessBanner extends StatelessWidget {
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         color: AppColors.success.withValues(alpha: 0.08),
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: AppRadii.borderSm,
         border: Border.all(
           color: AppColors.success.withValues(alpha: 0.25),
         ),

@@ -1,7 +1,9 @@
 // lib/features/auth/presentation/signup_screen.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:briluxforge/core/errors/app_exception.dart';
 import 'package:briluxforge/core/theme/app_colors.dart';
+import 'package:briluxforge/core/theme/app_tokens.dart';
 import 'package:briluxforge/core/utils/logger.dart';
 import 'package:briluxforge/features/auth/presentation/widgets/auth_form.dart';
 import 'package:briluxforge/features/auth/providers/auth_provider.dart';
@@ -45,7 +47,7 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
       AppLogger.e('SignupScreen', 'Signup failed', e);
       if (mounted) {
         setState(() {
-          _error = e.toString().replaceFirst('Exception: ', '');
+          _error = e is AppException ? e.message : 'Sign-up failed. Please check your details and try again.';
           _loading = false;
         });
       }
@@ -107,7 +109,7 @@ class _BrandPanel extends StatelessWidget {
               height: 52,
               decoration: BoxDecoration(
                 color: AppColors.primary,
-                borderRadius: BorderRadius.circular(14),
+                borderRadius: AppRadii.borderLg,
                 boxShadow: [
                   BoxShadow(
                     color: AppColors.primary.withValues(alpha: 0.35),

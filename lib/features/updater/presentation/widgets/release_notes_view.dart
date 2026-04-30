@@ -8,6 +8,7 @@ import 'package:flutter_markdown/flutter_markdown.dart';
 
 import 'package:briluxforge/core/theme/app_colors.dart';
 import 'package:briluxforge/core/theme/app_spacing.dart';
+import 'package:briluxforge/core/theme/app_tokens.dart';
 
 /// Scrollable markdown renderer for update release notes.
 ///
@@ -72,7 +73,7 @@ class ReleaseNotesView extends StatelessWidget {
                   ),
               codeblockDecoration: BoxDecoration(
                 color: AppColors.codeBlockBackgroundDark,
-                borderRadius: BorderRadius.circular(AppSpacing.sm),
+                borderRadius: AppRadii.borderSm,
               ),
               blockquoteDecoration: BoxDecoration(
                 border: Border(

@@ -82,9 +82,11 @@ class _ApiKeyCardState extends ConsumerState<ApiKeyCard> {
       if (mounted) {
         setState(() => _verifyError = _VerifyError(exception: e));
       }
-    } catch (e) {
+    } catch (_) {
+      // Non-AppException — show generic verification-failed message.
+      // Do not expose raw exception strings to the UI (§8.4 CLAUDE.MD).
       if (mounted) {
-        setState(() => _verifyError = _VerifyError(raw: e.toString()));
+        setState(() => _verifyError = const _VerifyError());
       }
     }
   }

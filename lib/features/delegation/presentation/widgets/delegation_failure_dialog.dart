@@ -1,6 +1,9 @@
-// lib/features/delegation/presentation/widgets/delegation_failure_dialog.dart
+// FILE: lib/features/delegation/presentation/widgets/delegation_failure_dialog.dart
 import 'package:flutter/material.dart';
+
 import 'package:briluxforge/core/theme/app_colors.dart';
+import 'package:briluxforge/core/theme/app_tokens.dart';
+import 'package:briluxforge/core/widgets/app_dialog.dart';
 
 /// The two possible choices from [DelegationFailureDialog].
 enum DelegationFailureChoice { useDefault, useAI }
@@ -11,24 +14,18 @@ typedef DelegationDialogResult = ({
   bool remember,
 });
 
-/// Shown when the delegation engine's confidence is below the threshold and
-/// it cannot automatically decide which model to use.
+/// Namespace for the delegation-failure dialog.
 ///
-/// Gives the user two options:
+/// Shown when the delegation engine's confidence is below threshold and it
+/// cannot automatically decide which model to use.  Gives the user two
+/// options:
 ///   1. Use Default — instant, zero extra cost.
 ///   2. Let AI Decide — sends a short meta-prompt to the best connected model.
 ///
 /// Also offers a "Remember this choice" checkbox so power users can suppress
 /// the dialog for future similar prompts.
-class DelegationFailureDialog extends StatefulWidget {
-  const DelegationFailureDialog({
-    super.key,
-    required this.defaultModelName,
-    required this.bestModelName,
-  });
-
-  final String defaultModelName;
-  final String bestModelName;
+abstract final class DelegationFailureDialog {
+  const DelegationFailureDialog._();
 
   /// Shows the dialog and returns the user's choice, or null if dismissed.
   static Future<DelegationDialogResult?> show(
@@ -36,170 +33,156 @@ class DelegationFailureDialog extends StatefulWidget {
     required String defaultModelName,
     required String bestModelName,
   }) {
-    return showDialog<DelegationDialogResult>(
+    return showAppDialog<DelegationDialogResult>(
       context: context,
+      title: 'Not sure which model is best',
       barrierDismissible: false,
-      builder: (_) => DelegationFailureDialog(
+      maxWidth: 440,
+      body: _DelegationDialogBody(
         defaultModelName: defaultModelName,
         bestModelName: bestModelName,
       ),
     );
   }
-
-  @override
-  State<DelegationFailureDialog> createState() =>
-      _DelegationFailureDialogState();
 }
 
-class _DelegationFailureDialogState extends State<DelegationFailureDialog> {
+// ── Dialog body — stateful so it can manage the remember checkbox ─────────────
+
+class _DelegationDialogBody extends StatefulWidget {
+  const _DelegationDialogBody({
+    required this.defaultModelName,
+    required this.bestModelName,
+  });
+
+  final String defaultModelName;
+  final String bestModelName;
+
+  @override
+  State<_DelegationDialogBody> createState() => _DelegationDialogBodyState();
+}
+
+class _DelegationDialogBodyState extends State<_DelegationDialogBody> {
   bool _remember = false;
+
+  void _close(DelegationFailureChoice choice) {
+    Navigator.of(context)
+        .pop<DelegationDialogResult>((choice: choice, remember: _remember));
+  }
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
-
-    final borderColor =
-        isDark ? AppColors.borderDark : AppColors.borderLight;
-    final surfaceColor =
-        isDark ? AppColors.surfaceDark : AppColors.surfaceLight;
-    final textPrimary =
-        isDark ? AppColors.textPrimaryDark : AppColors.textPrimaryLight;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     final textSecondary =
         isDark ? AppColors.textSecondaryDark : AppColors.textSecondaryLight;
+    final borderColor =
+        isDark ? AppColors.borderSubtle : AppColors.borderLight;
 
-    return Dialog(
-      backgroundColor: surfaceColor,
-      elevation: 0,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
-        side: BorderSide(color: borderColor),
-      ),
-      child: ConstrainedBox(
-        constraints: const BoxConstraints(maxWidth: 440),
-        child: Padding(
-          padding: const EdgeInsets.all(24),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // ── Header ──────────────────────────────────────────────────────
-              Row(
-                children: [
-                  Container(
-                    width: 36,
-                    height: 36,
-                    decoration: BoxDecoration(
-                      color: AppColors.warning.withValues(alpha: 0.15),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: const Icon(
-                      Icons.help_outline_rounded,
-                      color: AppColors.warning,
-                      size: 18,
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: Text(
-                      'Not sure which model is best',
-                      style: theme.textTheme.titleMedium?.copyWith(
-                        color: textPrimary,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ),
-                ],
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        // Explanation text with inline warning indicator
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Padding(
+              padding: EdgeInsets.only(top: 2),
+              child: Icon(
+                Icons.help_outline_rounded,
+                size: 16,
+                color: AppColors.statusWarnFg,
               ),
-              const SizedBox(height: 12),
-              Text(
-                "I couldn't determine the best model for this prompt with enough "
-                'confidence. Choose how to proceed:',
-                style: theme.textTheme.bodyMedium?.copyWith(
-                  color: textSecondary,
-                  height: 1.5,
-                ),
+            ),
+            const SizedBox(width: AppSpacing.sm),
+            Expanded(
+              child: Text(
+                "I couldn't determine the best model for this prompt with "
+                'enough confidence. Choose how to proceed:',
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      color: textSecondary,
+                      height: 1.5,
+                    ),
               ),
-              const SizedBox(height: 20),
+            ),
+          ],
+        ),
 
-              // ── Choice buttons ───────────────────────────────────────────────
-              Row(
-                children: [
-                  Expanded(
-                    child: _ChoiceCard(
-                      icon: Icons.bolt_rounded,
-                      iconColor: AppColors.accent,
-                      title: 'Use Default',
-                      subtitle: widget.defaultModelName,
-                      badge: 'Free · instant',
-                      badgeColor: AppColors.accent,
-                      onTap: () => _close(DelegationFailureChoice.useDefault),
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: _ChoiceCard(
-                      icon: Icons.auto_awesome_rounded,
-                      iconColor: AppColors.primary,
-                      title: 'Let AI Decide',
-                      subtitle: widget.bestModelName,
-                      badge: 'Few tokens',
-                      badgeColor: AppColors.primary,
-                      onTap: () => _close(DelegationFailureChoice.useAI),
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 16),
+        const SizedBox(height: AppSpacing.xl),
 
-              // ── Remember checkbox ───────────────────────────────────────────
-              InkWell(
-                onTap: () => setState(() => _remember = !_remember),
-                borderRadius: BorderRadius.circular(8),
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 4),
-                  child: Row(
-                    children: [
-                      SizedBox(
-                        width: 20,
-                        height: 20,
-                        child: Checkbox(
-                          value: _remember,
-                          onChanged: (v) =>
-                              setState(() => _remember = v ?? false),
-                          activeColor: AppColors.primary,
-                          side: BorderSide(color: borderColor, width: 1.5),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(4),
-                          ),
-                          materialTapTargetSize:
-                              MaterialTapTargetSize.shrinkWrap,
-                        ),
-                      ),
-                      const SizedBox(width: 10),
-                      Text(
-                        'Remember this choice for similar prompts',
-                        style: theme.textTheme.bodySmall?.copyWith(
-                          color: textSecondary,
-                        ),
-                      ),
-                    ],
+        // ── Choice cards ─────────────────────────────────────────────────────
+        Row(
+          children: [
+            Expanded(
+              child: _ChoiceCard(
+                icon: Icons.bolt_rounded,
+                iconColor: AppColors.accent,
+                title: 'Use Default',
+                subtitle: widget.defaultModelName,
+                badge: 'Free · instant',
+                badgeColor: AppColors.accent,
+                onTap: () => _close(DelegationFailureChoice.useDefault),
+              ),
+            ),
+            const SizedBox(width: AppSpacing.md),
+            Expanded(
+              child: _ChoiceCard(
+                icon: Icons.auto_awesome_rounded,
+                iconColor: AppColors.brandPrimary,
+                title: 'Let AI Decide',
+                subtitle: widget.bestModelName,
+                badge: 'Few tokens',
+                badgeColor: AppColors.brandPrimary,
+                onTap: () => _close(DelegationFailureChoice.useAI),
+              ),
+            ),
+          ],
+        ),
+
+        const SizedBox(height: AppSpacing.lg),
+
+        // ── Remember checkbox ─────────────────────────────────────────────────
+        InkWell(
+          onTap: () => setState(() => _remember = !_remember),
+          borderRadius: AppRadii.borderSm,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: AppSpacing.xs),
+            child: Row(
+              children: [
+                SizedBox(
+                  width: 20,
+                  height: 20,
+                  child: Checkbox(
+                    value: _remember,
+                    onChanged: (v) =>
+                        setState(() => _remember = v ?? false),
+                    activeColor: AppColors.brandPrimary,
+                    side: BorderSide(color: borderColor, width: 1.5),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: AppRadii.borderXs,
+                    ),
+                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                   ),
                 ),
-              ),
-            ],
+                const SizedBox(width: AppSpacing.md),
+                Text(
+                  'Remember this choice for similar prompts',
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        color: textSecondary,
+                      ),
+                ),
+              ],
+            ),
           ),
         ),
-      ),
-    );
-  }
 
-  void _close(DelegationFailureChoice choice) {
-    Navigator.of(context).pop((choice: choice, remember: _remember));
+        // Spacer so footer padding in AppDialog looks correct
+        const SizedBox(height: AppSpacing.xs),
+      ],
+    );
   }
 }
 
-// ── Choice card widget ─────────────────────────────────────────────────────
+// ── Choice card widget ─────────────────────────────────────────────────────────
 
 class _ChoiceCard extends StatefulWidget {
   const _ChoiceCard({
@@ -229,12 +212,10 @@ class _ChoiceCardState extends State<_ChoiceCard> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
-    final borderColor = isDark ? AppColors.borderDark : AppColors.borderLight;
-    final bgColor = isDark
-        ? AppColors.surfaceElevatedDark
-        : AppColors.surfaceElevatedLight;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final borderColor =
+        isDark ? AppColors.borderSubtle : AppColors.borderLight;
+    final bgColor = isDark ? AppColors.surfaceOverlay : AppColors.surfaceElevatedLight;
     final textPrimary =
         isDark ? AppColors.textPrimaryDark : AppColors.textPrimaryLight;
     final textSecondary =
@@ -250,16 +231,18 @@ class _ChoiceCardState extends State<_ChoiceCard> {
           color: _hovered
               ? widget.iconColor.withValues(alpha: 0.08)
               : bgColor,
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: AppRadii.borderMd,
           border: Border.all(
-            color: _hovered ? widget.iconColor.withValues(alpha: 0.5) : borderColor,
+            color: _hovered
+                ? widget.iconColor.withValues(alpha: 0.5)
+                : borderColor,
           ),
         ),
         child: InkWell(
           onTap: widget.onTap,
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: AppRadii.borderMd,
           child: Padding(
-            padding: const EdgeInsets.all(14),
+            padding: const EdgeInsets.all(AppSpacing.md),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -269,38 +252,40 @@ class _ChoiceCardState extends State<_ChoiceCard> {
                     const Spacer(),
                     Container(
                       padding: const EdgeInsets.symmetric(
-                        horizontal: 7,
-                        vertical: 2,
+                        horizontal: AppSpacing.sm,
+                        vertical: AppSpacing.xxs,
                       ),
                       decoration: BoxDecoration(
                         color: widget.badgeColor.withValues(alpha: 0.12),
-                        borderRadius: BorderRadius.circular(20),
+                        // Chip badge: use borderLg so it reads as a rounded
+                        // label chip without being a full pill.
+                        borderRadius: AppRadii.borderLg,
                       ),
                       child: Text(
                         widget.badge,
-                        style: theme.textTheme.labelSmall?.copyWith(
-                          color: widget.badgeColor,
-                          fontWeight: FontWeight.w600,
-                          fontSize: 10,
-                        ),
+                        style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                              color: widget.badgeColor,
+                              fontWeight: FontWeight.w600,
+                              fontSize: 10,
+                            ),
                       ),
                     ),
                   ],
                 ),
-                const SizedBox(height: 10),
+                const SizedBox(height: AppSpacing.md),
                 Text(
                   widget.title,
-                  style: theme.textTheme.bodyMedium?.copyWith(
-                    color: textPrimary,
-                    fontWeight: FontWeight.w600,
-                  ),
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        color: textPrimary,
+                        fontWeight: FontWeight.w600,
+                      ),
                 ),
-                const SizedBox(height: 2),
+                const SizedBox(height: AppSpacing.xxs),
                 Text(
                   widget.subtitle,
-                  style: theme.textTheme.labelSmall?.copyWith(
-                    color: textSecondary,
-                  ),
+                  style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                        color: textSecondary,
+                      ),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),

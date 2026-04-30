@@ -28,11 +28,11 @@ class UseCaseCard extends StatelessWidget {
       };
 
   Color get _accentColor => switch (useCase) {
-        UseCaseType.coding   => const Color(0xFF60A5FA),
-        UseCaseType.research => const Color(0xFF34D399),
-        UseCaseType.writing  => const Color(0xFFA78BFA),
-        UseCaseType.building => const Color(0xFFFBBF24),
-        UseCaseType.general  => const Color(0xFFF472B6),
+        UseCaseType.coding   => AppColors.accentBlue,
+        UseCaseType.research => AppColors.accentGreen,
+        UseCaseType.writing  => AppColors.accentViolet,
+        UseCaseType.building => AppColors.accentAmber,
+        UseCaseType.general  => AppColors.accentPink,
       };
 
   @override

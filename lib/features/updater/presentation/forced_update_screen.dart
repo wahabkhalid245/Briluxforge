@@ -8,6 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:briluxforge/core/theme/app_colors.dart';
 import 'package:briluxforge/core/theme/app_spacing.dart';
+import 'package:briluxforge/core/theme/app_tokens.dart';
 import 'package:briluxforge/features/updater/data/models/update_state.dart';
 import 'package:briluxforge/features/updater/presentation/widgets/release_notes_view.dart';
 import 'package:briluxforge/features/updater/presentation/widgets/update_progress_bar.dart';
@@ -96,7 +97,7 @@ class _InstallingOverlay extends StatelessWidget {
               height: 56,
               decoration: BoxDecoration(
                 color: AppColors.primary,
-                borderRadius: BorderRadius.circular(14),
+                borderRadius: AppRadii.borderLg,
               ),
               alignment: Alignment.center,
               child: const Icon(Icons.bolt, color: Colors.white, size: 32),
@@ -186,7 +187,7 @@ class _ForcedUpdateScreen extends ConsumerWidget {
                   height: 56,
                   decoration: BoxDecoration(
                     color: AppColors.primary,
-                    borderRadius: BorderRadius.circular(14),
+                    borderRadius: AppRadii.borderLg,
                   ),
                   alignment: Alignment.center,
                   child:
@@ -274,7 +275,7 @@ class _ForcedUpdateScreen extends ConsumerWidget {
         backgroundColor: AppColors.surfaceElevatedDark,
         elevation: 2,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: AppRadii.borderMd,
           side: const BorderSide(color: AppColors.borderDark),
         ),
         child: ConstrainedBox(
