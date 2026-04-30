@@ -65,6 +65,15 @@ xcuserdata/
 # CocoaPods (not used in this project, but guard against accidental init)
 Podfile.lock
 
+# Xcode build products (archives, debug symbols, distribution artifacts)
+*.xcarchive
+*.dSYM/
+*.dmg
+*.pkg
+
+# Distribution output directory (Windows .zip, macOS .dmg, Linux AppImage)
+dist/
+
 # -----------------------------------------------------------------------------
 # Platform — Linux
 # -----------------------------------------------------------------------------

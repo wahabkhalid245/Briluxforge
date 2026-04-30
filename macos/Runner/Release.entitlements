@@ -4,5 +4,8 @@
 <dict>
 	<key>com.apple.security.app-sandbox</key>
 	<true/>
+	<!-- Required: outbound HTTPS calls to AI API providers, Firebase Auth, and Gumroad -->
+	<key>com.apple.security.network.client</key>
+	<true/>
 </dict>
 </plist>
